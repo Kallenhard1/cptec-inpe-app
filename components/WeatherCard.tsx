@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
 
 import {
   View,
@@ -21,9 +23,11 @@ import {
   Text,
 } from 'react-native-paper';
 
+import theme from '../helper/theme'
+
 import data from '../service/api';
 
-const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
+const LeftContent = props => <Avatar.Icon {...props} icon="weather-sunny" />
 
 interface Idata {
   nome: string;
@@ -34,6 +38,7 @@ interface Idata {
 const WeatherCard: React.FC = () => {
   const { colors } = useTheme<any>();
   const [cities, setCities] = useState<any>();
+  const [goBack, setGoBack] = useState<boolean>(false);
 
   const handleClick = async () => {
     try {
@@ -45,32 +50,49 @@ const WeatherCard: React.FC = () => {
     }
   }
 
-  console.log(cities);
+  // console.log(cities);
+
+  const handleNavigate = () => {
+    setGoBack(true);
+    return goBack;
+  }
+
+  useEffect(() => {
+    if (goBack) {
+      setCities([]);
+      setGoBack(false);
+    }
+    return;
+  }, [goBack]);
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        <Card style={styles.container} mode='outlined'>
-          <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-          <Card.Content>
-          {cities && cities.length > 0 ? (
+      <Card style={styles.container} mode='outlined'>
+        <ScrollView>
+              {cities && cities.length > 0 && goBack === false ? (
               cities.map((city) => (
-                <ScrollView key={city.id}>
-                  <Text variant="titleLarge">{city.nome}</Text>
-                  <Text variant="bodyMedium">{city.uf}</Text>
-                </ScrollView>
+                  <ScrollView key={city.id}>
+                    <Text variant="titleLarge">{city.nome}</Text>
+                    <Text variant="bodyMedium">{city.uf}</Text>
+                  </ScrollView>
               ))
             ) : (
-              <Text>No cities available</Text>
+              <ScrollView>
+              <Card style={styles.container} mode='outlined'>
+                <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
+                <Card.Content>
+                  <Text>No cities available</Text>
+                </Card.Content>
+                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+              </Card>
+            </ScrollView>
             )}
-          </Card.Content>
-          <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-          <Card.Actions>
-            <Button>Cancel</Button>
-            <Button onPress={handleClick}>Ok</Button>
-          </Card.Actions>
+              <Card.Actions>
+                <Button onPress={handleNavigate} style={colors}>Go Back</Button>
+                <Button onPress={handleClick}>Ok</Button>
+              </Card.Actions>
+          </ScrollView>
         </Card>
-      </ScrollView>
     </SafeAreaView>
   );
 }

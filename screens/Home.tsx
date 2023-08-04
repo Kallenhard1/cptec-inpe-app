@@ -1,6 +1,10 @@
 import React from 'react';
 
-import { ScrollView, View, Text } from 'react-native';
+import { 
+  ScrollView,
+  StyleSheet,
+  View,
+  Text } from 'react-native';
 
 import {
   SafeAreaView
@@ -10,7 +14,7 @@ import WeatherCard from '../components/WeatherCard';
 
 const Home: React.FC = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <ScrollView>
         <Text>
           Home
@@ -20,5 +24,16 @@ const Home: React.FC = () => {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+    paddingVertical: 20
+  }
+});
 
 export default Home;
