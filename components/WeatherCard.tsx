@@ -69,7 +69,7 @@ const WeatherCard: React.FC = () => {
     <SafeAreaView>
       <Card style={styles.container} mode='outlined'>
         <ScrollView>
-              {cities && cities.length > 0 && goBack === false ? (
+              {cities && cities.length > 0 ? (
               cities.map((city) => (
                   <ScrollView key={city.id}>
                     <Text variant="titleLarge">{city.nome}</Text>
