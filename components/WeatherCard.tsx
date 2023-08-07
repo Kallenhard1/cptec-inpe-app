@@ -25,7 +25,9 @@ import {
 
 import theme from '../helper/theme'
 
-import data from '../service/api';
+import axios from 'axios';
+
+import { name, getCityData } from '../service/api';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="weather-sunny" />
 
@@ -40,9 +42,14 @@ const WeatherCard: React.FC = () => {
   const [cities, setCities] = useState<any>();
   const [goBack, setGoBack] = useState<boolean>(false);
 
-  const handleClick = async () => {
+  const nameForm = {
+    name: name
+  }
+
+  const handleClick = async (name: Idata) => {
     try {
-      const response = await data;
+      name = nameForm;
+      const response = await getCityData;
       setCities(response);
       return cities;
     } catch (error) {
@@ -70,7 +77,7 @@ const WeatherCard: React.FC = () => {
       <Card style={styles.container} mode='outlined'>
         <ScrollView>
               {cities && cities.length > 0 ? (
-              cities.map((city) => (
+              cities.map((city: Idata) => (
                   <ScrollView key={city.id}>
                     <Text variant="titleLarge">{city.nome}</Text>
                     <Text variant="bodyMedium">{city.uf}</Text>
@@ -89,7 +96,7 @@ const WeatherCard: React.FC = () => {
             )}
               <Card.Actions>
                 <Button onPress={handleNavigate} style={colors}>Go Back</Button>
-                <Button onPress={handleClick}>Ok</Button>
+                <Button onPress={handleClick('saopaulo')}>Ok</Button>
               </Card.Actions>
           </ScrollView>
         </Card>
