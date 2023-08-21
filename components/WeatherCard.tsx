@@ -27,31 +27,33 @@ import theme from '../helper/theme'
 
 import axios from 'axios';
 
-import { name, getCityData } from '../service/api';
+import { name, getAllCitiesData, getPredictionWeather } from '../service/api';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="weather-sunny" />
 
 interface Idata {
-  nome: string;
-  uf: string;
-  id: number;
+  cidade: string;
+  estado: string;
+  cityCode: Promise<any>;
+  days: Promise<any>;
+  atualizado_em: number;
+  clima: [];
 }
 
 const WeatherCard: React.FC = () => {
   const { colors } = useTheme<any>();
-  const [cities, setCities] = useState<any>();
+  const [cities, setCities] = useState<Idata[]>([]);
   const [goBack, setGoBack] = useState<boolean>(false);
+  const [city, setCity] = useState<string>('');
+  const [state, setState] = useState<string>('');
 
-  const nameForm = {
-    name: name
-  }
 
-  const handleClick = async (name: Idata) => {
+  const handleClick = async (cityCode: number, days: number) => {
     try {
-      name = nameForm;
-      const response = await getCityData;
-      setCities(response);
-      return cities;
+      const response = await getPredictionWeather(cityCode, days);
+      setCities(response.clima);
+      setCity(response.cidade);
+    setState(response.estado);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -75,31 +77,31 @@ const WeatherCard: React.FC = () => {
   return (
     <SafeAreaView>
       <Card style={styles.container} mode='outlined'>
-        <ScrollView>
-              {cities && cities.length > 0 ? (
-              cities.map((city: Idata) => (
-                  <ScrollView key={city.id}>
-                    <Text variant="titleLarge">{city.nome}</Text>
-                    <Text variant="bodyMedium">{city.uf}</Text>
-                  </ScrollView>
-              ))
-            ) : (
-              <ScrollView>
-              <Card style={styles.container} mode='outlined'>
-                <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-                <Card.Content>
-                  <Text>No cities available</Text>
-                </Card.Content>
-                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-              </Card>
-            </ScrollView>
-            )}
-              <Card.Actions>
-                <Button onPress={handleNavigate} style={colors}>Go Back</Button>
-                <Button onPress={handleClick('saopaulo')}>Ok</Button>
-              </Card.Actions>
-          </ScrollView>
-        </Card>
+      <ScrollView>
+    {cities && cities.length > 0 ? (
+      <View>
+        <Text variant="titleLarge">{city}</Text>
+        <Text variant="titleLarge">{state}</Text>
+        {cities.map((weather: any, index: number) => (
+          <View key={index}>
+            <Text variant="titleMedium">{weather.data}</Text>
+            <Text variant="bodyMedium">{weather.condicao_desc}</Text>
+            <Text variant="bodyMedium">Max: {weather.max}°C</Text>
+            <Text variant="bodyMedium">Min: {weather.min}°C</Text>
+          </View>
+        ))}
+      </View>
+    ) : (
+      <View>
+        <Text>No weather data available</Text>
+      </View>
+    )}
+  </ScrollView>
+        <Card.Actions>
+          <Button onPress={handleNavigate} style={colors}>Go Back</Button>
+          <Button onPress={() => handleClick(241, 0)}>Ok</Button>
+        </Card.Actions>
+      </Card>
     </SafeAreaView>
   );
 }
