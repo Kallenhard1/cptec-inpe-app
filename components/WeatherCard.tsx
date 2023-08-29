@@ -26,9 +26,16 @@ import theme from "../helper/theme";
 
 import axios from "axios";
 
-import { name, getAllCitiesData, getPredictionWeather } from "../service/api";
+import {
+  name,
+  getAllCitiesData,
+  getPredictionWeather,
+  cityCode,
+} from "../service/api";
 
-const LeftContent = (props) => <Avatar.Icon {...props} icon="weather-sunny" />;
+const LeftContent = (props: any) => (
+  <Avatar.Icon {...props} icon="weather-sunny" />
+);
 
 interface Idata {
   cidade: string;
@@ -44,6 +51,7 @@ const WeatherCard: React.FC = () => {
   const [cities, setCities] = useState<Idata[]>([]);
   const [goBack, setGoBack] = useState<boolean>(false);
   const [city, setCity] = useState<string>("");
+  const [value, setValue] = useState<string>();
   const [state, setState] = useState<string>("");
 
   const handleClick = async (cityCode: number, days: number) => {
@@ -58,6 +66,14 @@ const WeatherCard: React.FC = () => {
   };
 
   // console.log(cities);
+
+  const convertTextToNumber = (text: string) => {
+    if (text.match(city)) {
+      handleClick;
+    }
+    setValue(text);
+    console.log(`Cidade: ${text}, invalida.`);
+  };
 
   const handleNavigate = () => {
     setGoBack(true);
@@ -79,8 +95,8 @@ const WeatherCard: React.FC = () => {
           <View>
             <TextInput
               placeholder="Cidade, estado"
-              onChangeText={(e) => console.log(e.valueOf)}
-              value={city}
+              onChangeText={(e) => convertTextToNumber(e)}
+              value={value}
             ></TextInput>
           </View>
           {cities && cities.length > 0 ? (
