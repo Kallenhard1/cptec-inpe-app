@@ -50,22 +50,10 @@ const WeatherCard: React.FC = () => {
   const { colors } = useTheme<any>();
   const [cities, setCities] = useState<Idata[]>([]);
   const [goBack, setGoBack] = useState<boolean>(false);
+  const [cityCode, setCityCode] = useState<number | undefined>();
   const [city, setCity] = useState<string>("");
   const [value, setValue] = useState<string>();
   const [state, setState] = useState<string>("");
-
-  const handleClick = async (cityCode: number, days: number) => {
-    try {
-      const response = await getPredictionWeather(cityCode, days);
-      setCities(response.clima);
-      setCity(response.cidade);
-      setState(response.estado);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // console.log(cities);
 
   const cityCodes = {
     city: {
@@ -76,13 +64,23 @@ const WeatherCard: React.FC = () => {
 
   const convertTextToNumber = (text: string) => {
     const textQuery = text;
-    if (textQuery.match(cityCodes.city["Rio de Janeiro"])) {
-      const code = cityCodes.city["Rio de Janeiro"];
-      const days = cityCodes.days;
-      handleClick(number(code), days);
-    }
+    const code: number = +cityCodes.city["Rio de Janeiro"];
     setValue(textQuery);
-    console.log(`Cidade: ${textQuery}, invalida.`);
+    setCityCode(code);
+    console.log(`Cidade: ${textQuery}.`);
+    console.log(code);
+    return code;
+  };
+
+  const handleClick = async (code: any) => {
+    try {
+      const response = await getPredictionWeather(code, 0);
+      setCities(response.clima);
+      setCity(response.cidade);
+      setState(response.estado);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleNavigate = () => {
@@ -105,7 +103,7 @@ const WeatherCard: React.FC = () => {
           <View>
             <TextInput
               placeholder="Cidade, estado"
-              onChangeText={(e) => setValue(e)}
+              onChangeText={(e) => convertTextToNumber(e)}
               value={value}
             ></TextInput>
           </View>
@@ -132,7 +130,7 @@ const WeatherCard: React.FC = () => {
           <Button onPress={handleNavigate} style={colors}>
             Go Back
           </Button>
-          <Button onPress={() => handleClick(241, 0)}>Ok</Button>
+          <Button onPress={() => handleClick(cityCode)}>Ok</Button>
         </Card.Actions>
       </Card>
     </SafeAreaView>
