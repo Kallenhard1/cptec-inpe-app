@@ -40,8 +40,8 @@ const LeftContent = (props: any) => (
 interface Idata {
   cidade: string;
   estado: string;
-  cityCode: Promise<any>;
-  days: Promise<any>;
+  cityCode: Promise<number>;
+  days: Promise<number>;
   atualizado_em: number;
   clima: [];
 }
@@ -67,12 +67,22 @@ const WeatherCard: React.FC = () => {
 
   // console.log(cities);
 
+  const cityCodes = {
+    city: {
+      "Rio de Janeiro": "241",
+    },
+    days: 0,
+  };
+
   const convertTextToNumber = (text: string) => {
-    if (text.match(city)) {
-      handleClick;
+    const textQuery = text;
+    if (textQuery.match(cityCodes.city["Rio de Janeiro"])) {
+      const code = cityCodes.city["Rio de Janeiro"];
+      const days = cityCodes.days;
+      handleClick(number(code), days);
     }
-    setValue(text);
-    console.log(`Cidade: ${text}, invalida.`);
+    setValue(textQuery);
+    console.log(`Cidade: ${textQuery}, invalida.`);
   };
 
   const handleNavigate = () => {
