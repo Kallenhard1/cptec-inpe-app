@@ -95,7 +95,7 @@ const WeatherCard: React.FC = () => {
           <View>
             <TextInput
               placeholder="Cidade, estado"
-              onChangeText={(e) => convertTextToNumber(e)}
+              onChangeText={(e) => setValue(e)}
               value={value}
             ></TextInput>
           </View>
