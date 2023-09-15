@@ -50,34 +50,44 @@ const WeatherCard: React.FC = () => {
   const { colors } = useTheme<any>();
   const [cities, setCities] = useState<Idata[]>([]);
   const [goBack, setGoBack] = useState<boolean>(false);
-  const [cityCode, setCityCode] = useState<number | undefined>();
+  const [cityCode, setCityCode] = useState<number | []>([]);
   const [city, setCity] = useState<string>("");
-  const [value, setValue] = useState<string>();
+  const [value, setValue] = useState<string>("");
   const [state, setState] = useState<string>("");
 
   const cityCodes = {
-    city: {
-      "Rio de Janeiro": "241",
+    cidades: {
+      cidade: [
+        {
+          nome: "Rio de Janeiro",
+          uf: "RJ",
+          id: "241",
+        },
+      ],
     },
-    days: 0,
   };
 
   const convertTextToNumber = (text: string) => {
     const textQuery = text;
-    const code: number = +cityCodes.city["Rio de Janeiro"];
+    const code: number = +cityCodes.cidades.cidade.map((name) => {
+      name.nome == "Rio de janeiro";
+      return name.id;
+    });
     setValue(textQuery);
     setCityCode(code);
     console.log(`Cidade: ${textQuery}.`);
-    console.log(code);
+    // console.log(code);
     return code;
   };
 
   const handleClick = async (code: any) => {
     try {
       const response = await getPredictionWeather(code, 0);
+      console.log(code);
       setCities(response.clima);
       setCity(response.cidade);
       setState(response.estado);
+      console.log(response);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -90,7 +100,9 @@ const WeatherCard: React.FC = () => {
 
   useEffect(() => {
     if (goBack) {
+      setValue("");
       setCities([]);
+      setCityCode([]);
       setGoBack(false);
     }
     return;
@@ -128,7 +140,7 @@ const WeatherCard: React.FC = () => {
         </ScrollView>
         <Card.Actions>
           <Button onPress={handleNavigate} style={colors}>
-            Go Back
+            Clear All
           </Button>
           <Button onPress={() => handleClick(cityCode)}>Ok</Button>
         </Card.Actions>
